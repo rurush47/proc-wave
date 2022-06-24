@@ -32,6 +32,12 @@ public class ProceduralMesh : MonoBehaviour
             }
         }
 
+        var colors = new Color[_vertices.Length];
+        for (int i = 0; i < _vertices.Length; i++)
+        {
+            colors[i] = _surfaceData.Color;
+        }
+
         _triangles = new int[_surfaceData.XSize * _surfaceData.ZSize * 6];
         index = 0;
         for (int z = 0; z < _surfaceData.ZSize; z++)
@@ -54,6 +60,7 @@ public class ProceduralMesh : MonoBehaviour
 
         _mesh.vertices = _vertices;
         _mesh.triangles = _triangles;
+        _mesh.colors = colors;
         _mesh.RecalculateNormals();
     }
 
