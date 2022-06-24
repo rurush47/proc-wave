@@ -5,15 +5,18 @@ using UnityEngine;
 
 public class ProceduralMesh : MonoBehaviour
 {
-    [SerializeField] private MeshData meshData;
+    [SerializeField] private MeshData _meshData;
+    [SerializeField] private KeyCode _switchMaterialKey;
     [SerializeField] private float _waitTime;
     private MeshFilter _meshFilter;
+    private MeshRenderer _meshRenderer;
     private Mesh _mesh;
     private Vector3[] _vertices;
     private int[] _triangles;
 
     private void Start()
     {
+        _meshRenderer = GetComponent<MeshRenderer>();
         _meshFilter = GetComponent<MeshFilter>();
         GenerateMesh();
     }
@@ -22,58 +25,62 @@ public class ProceduralMesh : MonoBehaviour
     {
         _mesh = new Mesh();
         
-        _vertices = new Vector3[(meshData.XSize + 1) * (meshData.ZSize + 1)];
-        int index = 0;
-        for (int z = 0; z <= meshData.ZSize; z++)
-        {
-            for (int x = 0; x <= meshData.XSize; x++)
-            {
-                _vertices[index++] = new Vector3(x, 0, z);
-            }
-        }
+        _vertices = new Vector3[(_meshData.XSize + 1) * (_meshData.ZSize + 1)];
+        CalculateVertices(ref _vertices);
 
         var colors = new Color[_vertices.Length];
         for (int i = 0; i < _vertices.Length; i++)
         {
-            colors[i] = meshData.Color;
+            colors[i] = _meshData.Color;
         }
 
-        _triangles = new int[meshData.XSize * meshData.ZSize * 6];
-        index = 0;
-        for (int z = 0; z < meshData.ZSize; z++)
+        _triangles = new int[_meshData.XSize * _meshData.ZSize * 6];
+        for (int z = 0, i = 0; z < _meshData.ZSize; z++)
         {
-            for (int x = 0; x < meshData.XSize; x++)
+            for (int x = 0; x < _meshData.XSize; x++)
             {
-                _triangles[index++] = x + z + z * meshData.XSize;
-                _triangles[index++] = x + z + (z + 1) * meshData.XSize + 1;
-                _triangles[index++] = x + z + 1 + z * meshData.XSize;
+                _triangles[i++] = x + z + z * _meshData.XSize;
+                _triangles[i++] = x + z + (z + 1) * _meshData.XSize + 1;
+                _triangles[i++] = x + z + 1 + z * _meshData.XSize;
 
                 await Task.Delay(TimeSpan.FromSeconds(_waitTime));
                 
-                _triangles[index++] = x + z + 1 + z * meshData.XSize;
-                _triangles[index++] = x + z + (z + 1) * meshData.XSize + 1;
-                _triangles[index++] = x + z + 1 + (z + 1) * meshData.XSize + 1;
+                _triangles[i++] = x + z + 1 + z * _meshData.XSize;
+                _triangles[i++] = x + z + (z + 1) * _meshData.XSize + 1;
+                _triangles[i++] = x + z + 1 + (z + 1) * _meshData.XSize + 1;
             }
         }
         
         _meshFilter.mesh = _mesh;
-
         _mesh.vertices = _vertices;
-        _mesh.triangles = _triangles;
         _mesh.colors = colors;
+        _mesh.triangles = _triangles;
         _mesh.RecalculateNormals();
+    }
+
+    private void CalculateVertices(ref Vector3[] vertices)
+    {
+        for (int z = 0, i = 0; z <= _meshData.ZSize; z++)
+        {
+            for (int x = 0; x <= _meshData.XSize; x++, i++)
+            {
+                float y = 3 * Mathf.Sin(Mathf.PI*((float)x/_meshData.XSize + (float)z/_meshData.ZSize + Time.realtimeSinceStartup));
+                vertices[i] = new Vector3(x, y, z);
+            }
+        }
     }
 
     private void Update()
     {
-        for (int z = 0, i = 0; z <= meshData.ZSize; z++)
+        if (Input.GetKeyDown(_switchMaterialKey))
         {
-            for (int x = 0; x <= meshData.XSize; x++, i++)
-            {
-                float y = 3 * Mathf.Sin(Mathf.PI*((float)x/meshData.XSize + (float)z/meshData.ZSize + Time.realtimeSinceStartup));
-                _vertices[i] = new Vector3(x, y, z);
-            }
+            _meshRenderer.material =
+                _meshRenderer.material.name.Contains(_meshData.WireframeMaterial.name)
+                    ? _meshData.DiffuseMaterial
+                    : _meshData.WireframeMaterial;
         }
+        
+        CalculateVertices(ref _vertices);
         
         _mesh.vertices = _vertices;
         _mesh.RecalculateNormals();

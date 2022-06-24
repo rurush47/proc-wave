@@ -8,5 +8,7 @@ namespace Data
         public int XSize;
         public int ZSize;
         public Color Color;
+        public Material WireframeMaterial;
+        public Material DiffuseMaterial;
     }
 }
