@@ -9,6 +9,14 @@ namespace Data
         public int ZSize;
         public Color Color;
         public Material WireframeMaterial;
+        public Material FallbackWireframeMaterial;
         public Material DiffuseMaterial;
+
+        private void OnEnable()
+        {
+            #if UNITY_STANDALONE_OSX
+                WireframeMaterial = FallbackWireframeMaterial;
+            #endif
+        }
     }
 }

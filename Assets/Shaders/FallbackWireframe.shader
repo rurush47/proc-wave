@@ -1,4 +1,4 @@
-Shader "Custom/FakeWireframe" {
+Shader "Custom/FallbackWireframe" {
 	Properties {
 		_LineColor ("LineColor", Color) = (1, 1, 1, 1)
 		_MainColor ("_MainColor", Color) = (1, 1, 1, 1)

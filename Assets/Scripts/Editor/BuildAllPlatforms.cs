@@ -6,7 +6,7 @@ public class BuildAllPlatforms
     public static void BuildGame ()
     {
         string path = EditorUtility.SaveFolderPanel("Choose Location of Built Game", "", "");
-        string[] levels = new string[] {"Assets/Scenes/MainScene.unity"};
+        string[] levels = {"Assets/Scenes/MainScene.unity"};
 
         BuildPipeline.BuildPlayer(levels, path + "/Win/Demo.exe", BuildTarget.StandaloneWindows, BuildOptions.None);
         BuildPipeline.BuildPlayer(levels, path + "/Mac/Demo.app", BuildTarget.StandaloneOSX, BuildOptions.None);
