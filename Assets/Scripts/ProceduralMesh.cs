@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ProceduralMesh : MonoBehaviour
 {
-    [SerializeField] private SurfaceData _surfaceData;
+    [SerializeField] private MeshData meshData;
     [SerializeField] private float _waitTime;
     private MeshFilter _meshFilter;
     private Mesh _mesh;
@@ -22,11 +22,11 @@ public class ProceduralMesh : MonoBehaviour
     {
         _mesh = new Mesh();
         
-        _vertices = new Vector3[(_surfaceData.XSize + 1) * (_surfaceData.ZSize + 1)];
+        _vertices = new Vector3[(meshData.XSize + 1) * (meshData.ZSize + 1)];
         int index = 0;
-        for (int z = 0; z <= _surfaceData.ZSize; z++)
+        for (int z = 0; z <= meshData.ZSize; z++)
         {
-            for (int x = 0; x <= _surfaceData.XSize; x++)
+            for (int x = 0; x <= meshData.XSize; x++)
             {
                 _vertices[index++] = new Vector3(x, 0, z);
             }
@@ -35,24 +35,24 @@ public class ProceduralMesh : MonoBehaviour
         var colors = new Color[_vertices.Length];
         for (int i = 0; i < _vertices.Length; i++)
         {
-            colors[i] = _surfaceData.Color;
+            colors[i] = meshData.Color;
         }
 
-        _triangles = new int[_surfaceData.XSize * _surfaceData.ZSize * 6];
+        _triangles = new int[meshData.XSize * meshData.ZSize * 6];
         index = 0;
-        for (int z = 0; z < _surfaceData.ZSize; z++)
+        for (int z = 0; z < meshData.ZSize; z++)
         {
-            for (int x = 0; x < _surfaceData.XSize; x++)
+            for (int x = 0; x < meshData.XSize; x++)
             {
-                _triangles[index++] = x + z + z * _surfaceData.XSize;
-                _triangles[index++] = x + z + (z + 1) * _surfaceData.XSize + 1;
-                _triangles[index++] = x + z + 1 + z * _surfaceData.XSize;
+                _triangles[index++] = x + z + z * meshData.XSize;
+                _triangles[index++] = x + z + (z + 1) * meshData.XSize + 1;
+                _triangles[index++] = x + z + 1 + z * meshData.XSize;
 
                 await Task.Delay(TimeSpan.FromSeconds(_waitTime));
                 
-                _triangles[index++] = x + z + 1 + z * _surfaceData.XSize;
-                _triangles[index++] = x + z + (z + 1) * _surfaceData.XSize + 1;
-                _triangles[index++] = x + z + 1 + (z + 1) * _surfaceData.XSize + 1;
+                _triangles[index++] = x + z + 1 + z * meshData.XSize;
+                _triangles[index++] = x + z + (z + 1) * meshData.XSize + 1;
+                _triangles[index++] = x + z + 1 + (z + 1) * meshData.XSize + 1;
             }
         }
         
@@ -66,17 +66,16 @@ public class ProceduralMesh : MonoBehaviour
 
     private void Update()
     {
-        for (int z = 0, i = 0; z <= _surfaceData.ZSize; z++)
+        for (int z = 0, i = 0; z <= meshData.ZSize; z++)
         {
-            for (int x = 0; x <= _surfaceData.XSize; x++, i++)
+            for (int x = 0; x <= meshData.XSize; x++, i++)
             {
-                float y = 3 * Mathf.Sin(Mathf.PI*((float)x/_surfaceData.XSize + (float)z/_surfaceData.ZSize + Time.realtimeSinceStartup));
+                float y = 3 * Mathf.Sin(Mathf.PI*((float)x/meshData.XSize + (float)z/meshData.ZSize + Time.realtimeSinceStartup));
                 _vertices[i] = new Vector3(x, y, z);
             }
         }
         
         _mesh.vertices = _vertices;
-        _mesh.triangles = _triangles;
         _mesh.RecalculateNormals();
     }
 }

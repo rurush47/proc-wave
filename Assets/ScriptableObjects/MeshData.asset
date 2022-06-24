@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e30b2f55aaebc4af1b1df98ab5e84f07, type: 3}
-  m_Name: SurfaceData
+  m_Name: MeshData
   m_EditorClassIdentifier: 
   XSize: 30
   ZSize: 20

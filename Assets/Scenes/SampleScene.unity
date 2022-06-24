@@ -347,7 +347,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47ccbc354562b4695a77dc8bc45578bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _surfaceData: {fileID: 11400000, guid: 0a52a50b71e0046f697feb08fd31d256, type: 2}
+  meshData: {fileID: 11400000, guid: ff2fb04531aaa44968a12178e96d5e31, type: 2}
   _waitTime: 0
 --- !u!23 &988679228
 MeshRenderer:
